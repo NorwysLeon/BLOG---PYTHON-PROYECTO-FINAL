@@ -9,4 +9,6 @@ class Blog(models.Model):
     fecha=models.DateField()
     autor=models.CharField(max_length=100)
     imagen=models.ImageField()
-    
+
+    def __str__(self):
+        return f"{self.titulo} - {self.subtitulo} - {self.cuerpo} - {self.fecha} - {self.autor} {self.imagen}"

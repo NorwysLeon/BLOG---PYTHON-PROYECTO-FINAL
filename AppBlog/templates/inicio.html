@@ -1,0 +1,27 @@
+{% extends "Padre.html" %}
+{% load static %}
+
+{% block Titulos_iniciales %}
+<span class="site-heading-upper text-primary mb-3">BIENVENIDO</span>
+<span class="site-heading-lower">BLOG DE NORWYS LEON</span>
+{% endblock %}
+
+{% block imagen %}
+    <img class="intro-img img-fluid mb-3 mb-lg-0 rounded" src="{% static 'assets/img/hola.jpg' %}" alt="..." />
+{% endblock %}
+
+
+{% block Titulos_texto %}
+<h2 class="section-heading mb-4">
+    <h3> {{ mensaje }}</h3>
+    <span class="section-heading-upper">HOLA.!</span>
+    <span class="section-heading-lower">En este BLOG podrás encontrar información de tu agrado y 
+        además podrás postear lo que consideres importante como para compartirlo con el mundo.
+            </span>
+        </h2>
+{% endblock %}
+
+
+{% block Autor_fecha %}
+    <div class="container"><p class="m-0 small">Autor: Norwys León - Fecha: Enero 2022</p></div>
+{% endblock %}
