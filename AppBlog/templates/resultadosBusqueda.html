@@ -1,0 +1,40 @@
+{% extends "Padre.html" %}
+{% load static %}
+
+{% block Titulos_iniciales %}
+<span class="site-heading-upper text-primary mb-3"></span>
+<span class="site-heading-lower">RESULTADOS DE LA BUSQUEDA</span>
+{% endblock %}
+
+{% block imagen %}
+    <img class="intro-img img-fluid mb-3 mb-lg-0 rounded" src="{% static 'assets/img/registro.jpg' %}" alt="..." />
+{% endblock %}
+
+<h3>{{  mensaje }}</h3>
+{% block Titulos_texto %}
+<h6 class="section-heading mb-4">
+
+{% if blogs %}
+
+<h2>LISTADO DE BLOG</h2>
+{% for blog in blogs %}
+
+<h3>{{ blog.titulo }} - {{ blog.subtitulo }}
+    {{ blog.cuerpo }} - {{ blog.fecha }}
+    {{ blog.autor }} - {{ blog.imagen }}</h3>
+
+{% endfor %}
+
+{% else %}
+
+<h2>NO HAY BLOG</h2>
+
+{% endif %}
+
+ </h6>
+{% endblock %}
+
+
+{% block Autor_fecha %}
+    <div class="container"><p class="m-0 small">Autor: Norwys León - Fecha: Enero 2022</p></div>
+{% endblock %}
