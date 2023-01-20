@@ -1,0 +1,28 @@
+{% extends "Padre.html" %}
+{% load static %}
+
+{% block Titulos_iniciales %}
+<span class="site-heading-upper text-primary mb-3">NORWYS LEÓN</span>
+<span class="site-heading-lower">ACERCA DE MI.!</span>
+{% endblock %}
+
+{% block imagen %}
+    <img class="intro-img img-fluid mb-3 mb-lg-0 rounded" src="{% static 'assets/img/acercademi.jpg' %}" alt="..." />
+{% endblock %}
+
+
+{% block Titulos_texto %}
+<h2 class="section mb-4">
+    <p class="mb-3">ACERCA DE MI</p>
+    
+    <p class="mb-0">Mujer Venezolana viviendo hace varios años en Chile, Ingeniero Industrial de Profesión, pero actualmente me encuentro empezando un giro 360° en el ámbito profesional.
+        Los últimos meses decidí capacitarme acerca de temas y herramientas de vanguardia que eran totalmente desconocidas para mi. Por lo que este BLOG significa mucho, 
+        ya que representa mis primeros pasos en un lenguaje de programación llamado "PYTHON". 
+        </p>
+ </h2>
+{% endblock %}
+
+
+{% block Autor_fecha %}
+    <div class="container"><p class="m-0 small">Autor: Norwys León - Fecha: Enero 2022</p></div>
+{% endblock %}

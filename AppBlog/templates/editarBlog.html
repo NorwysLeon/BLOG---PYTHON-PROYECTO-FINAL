@@ -3,22 +3,26 @@
 
 {% block Titulos_iniciales %}
 <span class="site-heading-upper text-primary mb-3"></span>
-<span class="site-heading-lower">LISTA DE POST PUBLICADOS</span>
+<span class="site-heading-lower">EDITANDO POST </span>
 {% endblock %}
 
 {% block imagen %}
     <img class="intro-img img-fluid mb-3 mb-lg-0 rounded" src="{% static 'assets/img/registro.jpg' %}" alt="..." />
 {% endblock %}
 
-
+<h3>{{  mensaje }}</h3>
 {% block Titulos_texto %}
-<h2 class="section-heading mb-4">
-    <h3> {{ mensaje }}</h3>
-    <span class="section-heading-upper">HOLA.!</span>
-    <span class="section-heading-lower">En este BLOG podrás encontrar información de tu agrado y 
-        además podrás postear lo que consideres importante como para compartirlo con el mundo.
-            </span>
-        </h2>
+<h6 class="section-heading mb-4">
+    <form action="{% url 'blogFormulario' %}" method="POST"> {% csrf_token %}
+
+       <table>
+            {{ form.as_table }}
+           
+       </table>
+        <input type="submit" value="Guardar Cambios">
+    </form>
+
+ </h6>
 {% endblock %}
 
 

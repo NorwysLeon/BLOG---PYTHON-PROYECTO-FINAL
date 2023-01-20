@@ -3,6 +3,9 @@ from .models import Blog
 from django.http import HttpResponse
 
 from AppBlog.forms import BlogForm
+
+from django.views.generic import ListView, DetailView
+
 # Create your views here.
 
 
@@ -18,6 +21,9 @@ def blogs(request):
 
 def inicio(request):
     return render(request, "inicio.html")
+
+def acercademi(request):
+    return render(request, "acercademi.html")
 
 #Este se usa cuando se realiza el formulario en el html
 """def blogFormulario(request):
@@ -48,7 +54,8 @@ def blogFormulario(request):
             imagen= informacion["imagen"]
             blog= Blog(titulo=titulo, subtitulo=subtitulo, cuerpo=cuerpo, fecha=fecha, autor=autor, imagen=imagen)
             blog.save()
-            return render(request, "inicio.html", {"mensaje": "Post guardado correctamente"})       
+            blogs=Blog.objects.all()
+            return render(request, "leerBlogs.html", {"blogs":blogs, "mensaje": "Post guardado correctamente"})       
     else:
         formulario=BlogForm()
         return render(request, "blogFormulario.html", {"form": formulario, "mensaje": "Información no valida"})
@@ -69,4 +76,40 @@ def buscar(request):
 def leerBlogs(request):
     blogs=Blog.objects.all()
     return render (request, "leerBlogs.html", {"blogs":blogs})
-    
+
+def eliminarBlog(request, id):
+    blog= Blog.objects.get(id=id) #Trae los datos del model Blog que concuerda con el id. como es get es uno solo.
+    blog.delete()
+    blogs=Blog.objects.all()
+    return render(request, "leerBlogs.html", {"blogs":blogs, "mensaje": "Blog eliminado correctamente"})
+
+
+def editarBlog(request, id):
+    blog=Blog.objects.get(id=id)
+    if request.method=="POST":
+        form= BlogForm(request.POST)
+        if form.is_valid():         #Verifica si el formulario es valido
+            info=form.cleaned_data  #transforma del formulario al diccionario
+            blog.titulo=info["titulo"]
+            blog.subtitulo=info["subtitulo"]
+            blog.cuerpo=info["cuerpo"]
+            blog.fecha=info["fecha"]
+            blog.autor=info["autor"]
+            blog.imagen=info["imagen"]
+            blog.save()
+            blogs=Blog.objects.all()
+            return render (request, "leerBlogs.html", {"blogs": blogs, "mensaje": "Blog editado correctamente!"})
+            pass
+    else:
+        formulario= BlogForm(initial={"titulo":blog.titulo, "subtitulo":blog.subtitulo, "cuerpo":blog.cuerpo, "fecha":blog.fecha, "autor":blog.autor, "imagen":blog.imagen})  #Trae los datos iniciales del Blog
+        return render (request, "editarBlog.html", {"form": formulario})
+
+#Permite listar todos los blogs de la BD, con información mínima de dicho blog.
+class BlogList(ListView):
+    model=Blog
+    template_name= "BlogList.html"
+
+#Al clickear en "Leer más" navega al detalle de cada blog mediante un 'blog/<pk>'.
+class BlogDetalle(DetailView):
+    model=Blog
+    template_name="BlogDetalle.html"
