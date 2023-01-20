@@ -64,3 +64,9 @@ def buscar(request):
         return render(request, "resultadosBusqueda.html", {"blogs":blogs})
     else:
         return render (request, "busquedaTitulo.html", {"mensaje": "Favor ingresar un titulo para buscar"})
+
+
+def leerBlogs(request):
+    blogs=Blog.objects.all()
+    return render (request, "leerBlogs.html", {"blogs":blogs})
+    
