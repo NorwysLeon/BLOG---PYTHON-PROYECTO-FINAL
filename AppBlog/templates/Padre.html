@@ -36,11 +36,13 @@
                         <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'acercademi' %}">ACERCA DE MI</a></li>
                         <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'blog_list' %}">BLOGS</a></li>
                         
-                        <p>Bienvenido: {{ user.username }}</p>
+                        
+                        
                         {% if user.is_authenticated %}
                         <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'logout' %}">CERRAR SESIÓN</a></li>
-                        <img src="{{ avatar }} alt="">
-                       
+                        <p>Bienvenido: {{ user.username }}</p>
+                        <img src="{{ avatar }}" alt="">
+                        
 
                         {% else  %}
                         <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'register' %}">REGISTRO</a></li>

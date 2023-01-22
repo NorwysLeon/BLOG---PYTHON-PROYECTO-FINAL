@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from .models import Blog
+from .models import Blog, Perfil, Avatar
 from django.http import HttpResponse
 
-from AppBlog.forms import BlogForm, RegistroUsuarioForm
+from AppBlog.forms import BlogForm, RegistroUsuarioForm, UserEditForm, PerfilForm, AvatarForm
 
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
@@ -14,6 +14,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin #para vistas basadas e
 
 # Create your views here.
 
+def obtenerAvatar(request):
+    lista=Avatar.objects.filter(user=request.user)
+    if len(lista)!=0:
+        avatar=lista[0].imagen.url
+    else:
+        avatar="/media/avatars/Porfecto.png"
+        return avatar
 
 @login_required
 def blog(request):
@@ -25,7 +32,7 @@ def blog(request):
 
 @login_required
 def blogs(request):
-    return render(request, "blogs.html")
+    return render(request, "blogs.html", {"avatar": obtenerAvatar(request)})
 
 
 def inicio(request):
@@ -66,35 +73,35 @@ def blogFormulario(request):
             blog= Blog(titulo=titulo, subtitulo=subtitulo, cuerpo=cuerpo, fecha=fecha, autor=autor, imagen=imagen)
             blog.save()
             blogs=Blog.objects.all()
-            return render(request, "leerBlogs.html", {"blogs":blogs, "mensaje": "Post guardado correctamente"})       
+            return render(request, "leerBlogs.html", {"blogs":blogs, "mensaje": "Post guardado correctamente", "avatar": obtenerAvatar(request)})       
     else:
         formulario=BlogForm()
-        return render(request, "blogFormulario.html", {"form": formulario, "mensaje": "Información no valida"})
+        return render(request, "blogFormulario.html", {"form": formulario, "mensaje": "Información no valida", "avatar": obtenerAvatar(request)})
 
 @login_required
-def busquedaTitulo(requets):
-    return render(requets, "busquedaTitulo.html")
+def busquedaTitulo(request):
+    return render(request, "busquedaTitulo.html", {"avatar": obtenerAvatar(request)})
 
 @login_required
 def buscar(request):
     titulo=request.GET["titulo"]
     if titulo!="":
         blogs=Blog.objects.filter(titulo__icontains=titulo)
-        return render(request, "resultadosBusqueda.html", {"blogs":blogs})
+        return render(request, "resultadosBusqueda.html", {"blogs":blogs, "avatar": obtenerAvatar(request)})
     else:
-        return render (request, "busquedaTitulo.html", {"mensaje": "Favor ingresar un titulo para buscar"})
+        return render (request, "busquedaTitulo.html", {"mensaje": "Favor ingresar un titulo para buscar", "avatar": obtenerAvatar(request)})
 
 @login_required
 def leerBlogs(request):
     blogs=Blog.objects.all()
-    return render (request, "leerBlogs.html", {"blogs":blogs})
+    return render (request, "leerBlogs.html", {"blogs":blogs, "avatar": obtenerAvatar(request)})
 
 @login_required
 def eliminarBlog(request, id):
     blog= Blog.objects.get(id=id) #Trae los datos del model Blog que concuerda con el id. como es get es uno solo.
     blog.delete()
     blogs=Blog.objects.all()
-    return render(request, "leerBlogs.html", {"blogs":blogs, "mensaje": "Blog eliminado correctamente"})
+    return render(request, "leerBlogs.html", {"blogs":blogs, "mensaje": "Blog eliminado correctamente", "avatar": obtenerAvatar(request)})
 
 @login_required
 def editarBlog(request, id):
@@ -111,11 +118,11 @@ def editarBlog(request, id):
             blog.imagen=info["imagen"]
             blog.save()
             blogs=Blog.objects.all()
-            return render (request, "leerBlogs.html", {"blogs": blogs, "mensaje": "Blog editado correctamente!"})
+            return render (request, "leerBlogs.html", {"blogs": blogs, "mensaje": "Blog editado correctamente!", "avatar": obtenerAvatar(request)})
             pass
     else:
         formulario= BlogForm(initial={"titulo":blog.titulo, "subtitulo":blog.subtitulo, "cuerpo":blog.cuerpo, "fecha":blog.fecha, "autor":blog.autor, "imagen":blog.imagen})  #Trae los datos iniciales del Blog
-        return render (request, "editarBlog.html", {"form": formulario})
+        return render (request, "editarBlog.html", {"form": formulario, "avatar": obtenerAvatar(request)})
 
 
 #Permite listar todos los blogs de la BD, con información mínima de dicho blog.
@@ -166,3 +173,67 @@ def login_usuario(request):
     else:
         form=AuthenticationForm()
         return render (request,"login.html", {"form": form})
+
+
+
+@login_required
+def editarPerfil(request):
+    usuario=request.user
+    if request.method=="POST":
+        form=UserEditForm(request.POST)
+        if form.is_valid():
+            info=form.cleaned_data
+            usuario.email=info["email"]
+            usuario.password1=info["password1"]
+            usuario.password2=info["password2"]
+            usuario.first_name=info["first_name"]
+            usuario.last_name=info["last_name"]
+            usuario.save()
+            return render(request, "inicio.html", {"mensaje": f"Usuario {usuario.username} editado correctamente", "avatar": obtenerAvatar(request)})
+        else:
+            return render (request, "editarPerfil.html", {"form": form, "nombreusuario": usuario.username, "avatar": obtenerAvatar(request)})
+    else:
+        form=UserEditForm(instance=usuario)
+        return render (request, "editarPerfil.html", {"form": form, "nombreusuario": usuario.username, "avatar": obtenerAvatar(request)})
+
+
+def agregarAvatar(request):
+    if request.method=="POST":
+        form=AvatarForm(request.POST, request.FILES)
+        if form.is_valid():
+            avatar=Avatar(user=request.user, imagen=request.FILES["imagen"])
+            avatarViejo=Avatar.objects.filter(user=request.user)
+            if len(avatarViejo)>0:
+                avatarViejo[0].delete()
+            avatar.save()
+            return render(request, "inicio.html", {"mensaje":f"Avatar agregado correctamente"})
+        else:
+            return render(request, "agregarAvatar.html", {"form": form, "usuario": request.user, "mensaje":"Error al agregar el avatar"})
+    else:
+        form=AvatarForm()
+        return render(request, "agregarAvatar.html", {"form": form, "usuario": request.user})
+
+@login_required
+def perfil(request):
+    if request.method=="POST":
+        form=PerfilForm(request.POST, request.FILES)
+        if form.is_valid():
+            nombre=["nombre"]
+            descripcion=["descripcion"]
+            web=["web"]
+            email=["email"]
+            password1=["password1"]
+            password2=["password2"]
+            imagen=["imagen"]
+            imagen=Perfil(user=request.user, imagen=request.FILES["imagen"])
+            perfiles=Perfil(nombre=nombre, descripcion=descripcion, web=web, email=email, password1=password1, password2=password2, imagen=imagen)
+            #imagenVieja=Perfil.objects.filter(user=request.user)
+            #if len(imagenVieja)>0:
+                #imagenVieja[0].imagen.delete()
+            perfiles.save()
+            return render(request, "inicio.html", {"mensaje":f"Avatar agregado correctamente"})
+        else:
+            return render(request, "perfil.html", {"form": form, "usuario": request.user, "mensaje":"Error al agregar el avatar"})
+    else:
+        form=PerfilForm()
+        return render(request, "perfil.html", {"form": form, "usuario": request.user})

@@ -3,24 +3,23 @@
 
 {% block Titulos_iniciales %}
 <span class="site-heading-upper text-primary mb-3"></span>
-<span class="site-heading-lower">FORMULARIO PARA CREAR POST</span>
+<span class="site-heading-lower">AGREGAR AVATAR DE: {{ usuario.username }} </span>
 {% endblock %}
-
 
 {% block imagen %}
     <img class="intro-img img-fluid mb-3 mb-lg-0 rounded" src="{% static 'assets/img/registro.jpg' %}" alt="..." />
 {% endblock %}
 
-
 <h3>{{  mensaje }}</h3>
 {% block Titulos_texto %}
 <h6 class="section-heading mb-4">
-    
-    <form action="{% url 'buscar' %}" method="GET"> {% csrf_token %}
+    <form action="{% url 'agregarAvatar' %}" method="POST" enctype="multipart/form-data"> {% csrf_token %}
 
-        <input type="text" name="titulo" id="titulo" placeholder="INSERTE TITULO">
-
-        <input type="submit" value="Buscar titulo">
+       <table>
+            {{ form.as_table }}
+           
+       </table>
+        <input type="submit" value="Agregar Avatar">
     </form>
 
  </h6>
