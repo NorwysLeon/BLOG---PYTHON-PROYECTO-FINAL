@@ -20,6 +20,7 @@ Cuenta con ckeditor instalado.
 
 Archivos adicionales:
 3 Casos de prueba - link: https://docs.google.com/spreadsheets/d/1jaXdX3NOjwNJn-Py8Ly5YlXIG3n20_Bo/edit?usp=share_link&ouid=112814822081420240324&rtpof=true&sd=true
+Video - enlace: https://drive.google.com/file/d/1-A-srO8C3-iXNMOXglJGjyEASXhep-Iz/view?usp=sharing
 
 
 
